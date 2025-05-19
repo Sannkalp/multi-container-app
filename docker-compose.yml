@@ -1,0 +1,10 @@
+services:
+  web:
+    build: ./web
+    ports:
+      - "8082:80"
+
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
