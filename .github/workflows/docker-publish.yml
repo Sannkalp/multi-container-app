@@ -26,3 +26,21 @@ jobs:
           file: ./node-app/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/node-app:latest
+
+
+- name: Deploy to EC2
+  uses: appleboy/ssh-action@master
+  with:
+    host: ${{ secrets.EC2_HOST }}
+    username: ${{ secrets.EC2_USER }}
+    key: ${{ secrets.EC2_KEY }}
+    script: |
+      if [ ! -d "multi-container-app" ]; then
+        git clone ${{ secrets.REPO_URL }}
+      else
+        cd multi-container-app && git pull origin main
+      fi
+      cd multi-container-app
+      docker pull sannkalp/node-app:latest
+      docker-compose down
+      docker-compose up -d
